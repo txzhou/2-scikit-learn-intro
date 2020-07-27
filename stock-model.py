@@ -11,7 +11,8 @@ import pandas as pd
 
 import numpy as np
 
-from sklearn.preprocessing import Imputer, PolynomialFeatures
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, median_absolute_error
@@ -51,7 +52,7 @@ y_test  = y[(n_train+10):]
 pipeline = Pipeline([("ColumnEx", ColumnExtractor("Close")),
                      ("Diff", TimeSeriesDiff()),
                      ("Embed", TimeSeriesEmbedder(10)),
-                     ("ImputerNA", Imputer()),
+                     ("ImputerNA", SimpleImputer()),
                      ("LinReg", LinearRegression())])
                     
 pipeline.fit(data_train, y_train)
@@ -78,12 +79,12 @@ plt.savefig("plots/performance-simple-linreg.png")
 pipeline_closing_price = Pipeline([("ColumnEx", ColumnExtractor("Close")),
                                    ("Diff", TimeSeriesDiff()),
                                    ("Embed", TimeSeriesEmbedder(10)),
-                                   ("ImputerNA", Imputer())])
+                                   ("ImputerNA", SimpleImputer())])
 
 pipeline_volume = Pipeline([("ColumnEx", ColumnExtractor("Volume")),
                             ("Diff", TimeSeriesDiff()),
                             ("Embed", TimeSeriesEmbedder(10)),
-                            ("ImputerNA", Imputer())])
+                            ("ImputerNA", SimpleImputer())])
 
 merged_features = FeatureUnion([("ClosingPriceFeature", pipeline_closing_price),
                                 ("VolumeFeature", pipeline_volume)])
